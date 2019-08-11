@@ -5,105 +5,13 @@
 <title>Omnistream DEMO</title>
 <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
 <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
-<style type="text/css">
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        box-sizing:border-box;
-        overflow-x:hidden;
-    }
-	#map{
-		position: absolute;
-		top:60px;
-		left:0px;
-		bottom:0px;
-		right:0px;
-		margin:0px;
-	}
-	.control-container{
-		background-color: #fff;
-		font-family: Roboto;
-		position: absolute;
-		top: 10px;
-		width: 550px;
-		height: 40px;
-		left: 30%;
-	}
-	.control{
-		line-height: 40px;
-		width:100%;
-		font-size: 20px;
-		padding:0px 10px;
-	}
-	 /* The sidepanel menu */
-	.sidepanel {
-	  	height: 100%; /* Specify a height */
-	  	width: 0; /* 0 width - change this with JavaScript */
-	  	position: fixed; /* Stay in place */
-	  	z-index: 1; /* Stay on top */
-	  	top: 0;
-	  	left: 0;
-	  	background-color: #fff; 
-	  	overflow-x: hidden; /* Disable horizontal scroll */
-	  	overflow-y:auto;
-    	padding-top: 60px;
-    	box-sizing: border-box;
-	  	transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
-	  	border-right: 1px solid #eee;
-	}
-
-	.sidepanel.shrinked{
-		left:-325px;
-		height:60px;
-		overflow-y: hidden;
-	}
-
-	.sidepanel ul{
-		list-style-type: none;
-	}
-	/* The sidepanel links */
-	.sidepanel a {
-	  padding: 8px 8px 8px 32px;
-	  text-decoration: none;
-	  font-size: 25px;
-	  color: #818181;
-	  display: block;
-	  transition: 0.3s;
-	}
-
-	/* When you mouse over the navigation links, change their color */
-	.sidepanel a:hover {
-	  color: #f1f1f1;
-	}
-
-	/* Position and style the close button (top right corner) */
-	.sidepanel .closebtn,  .sidepanel .openbtn{
-	  position: absolute;
-	  top: 0;
-	  right: 25px;
-	  font-size: 36px;
-	  margin-left: 50px;
-	}
-	#sidepanel-body{
-		padding:10px;
-	}	
-	.sidepanel .closebtn.closed{
-		display: none;
-	}
-	.sidepanel .closebtn.open{
-		display: block;
-	}
-	.sidepanel .openbtn.closed{
-		display: none;
-	}
-	.sidepanel .openbtn.open{
-		display: block;
-	}
-</style>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" type="text/css" href="app.css" />
+<link rel="import" href="templates/densitysheet.html">
 </head>
 
 <body>
+	<!-- Templates -->	
 	<script type="text/template" id="tpl-sidepanelbody">
 		<p style="font-weight:bold;">Attributes</p>
 		<ul>
@@ -170,57 +78,54 @@
 		</div>
 	</script>
 	<script type="text/template" id="tpl_poidensity">
-		<ul>
-			<li>Schools: {{density_school.cluster}} (avg. {{density_school.val}})</li>
-			<li>Hospitals: {{density_hospital.cluster}} (avg. {{density_hospital.val}})</li>
-			<li>Clinics: {{density_clinics.cluster}} (avg. {{density_clinics.val}})</li>
-			<li>Shopping malls: {{density_shoppingmall.cluster}} (avg. {{density_shoppingmall.val}})</li>
-			<li>Cafés: {{density_cafe.cluster}} (avg. {{density_cafe.val}})</li>
-			<li>Grocery stores: {{density_grocerystores.cluster}} (avg. {{density_grocerystores.val}})</li>
-			<li>Convenience stores: {{density_conveniencestores.cluster}} (avg. {{density_conveniencestores.val}})</li>
-			<li>Hawker stands: {{density_hawkerstands.cluster}} (avg. {{density_hawkerstands.val}})</li>
-			<li>Restaurants: {{density_restaurant.cluster}} (avg. {{density_restaurant.val}})</li>
-			<li>Offices: {{density_offices.cluster}} (avg. {{density_offices.val}})</li>
-			<li>Piano Schools: {{density_pianoschools.cluster}} (avg. {{density_pianoschools.val}})</li>
-			<li>Gyms: {{density_gyms.cluster}} (avg. {{density_gyms.val}})</li>
-			<li>Yoga studios: {{density_yoga.cluster}} (avg. {{density_yoga.val}})</li>
-			<li>Spas: {{density_spa.cluster}} (avg. {{density_spa.val}})</li>
-			<li>Golf Courses: {{density_golfcourse.cluster}} (avg. {{density_golfcourse.val}})</li>
-			<li>Bus stops: {{density_bus_stops.cluster}} (avg. {{density_bus_stops.val}})</li>
-			<li>MRT stops: {{density_mrt.cluster}} (avg. {{density_mrt.val}})</li>
-		</ul>		
-	</script>
-	<input type="text" id="address-input-field" style="width:100%;height:60px;line-height:40px;position: absolute;top:0px;left:0px;margin:0px;border:none;font-size:20px;padding:0px 20px;"/>
+			<ul>
+				<li>Schools: {{density_school.cluster}} (avg. {{density_school.val}})</li>
+				<li>Hospitals: {{density_hospital.cluster}} (avg. {{density_hospital.val}})</li>
+				<li>Clinics: {{density_clinics.cluster}} (avg. {{density_clinics.val}})</li>
+				<li>Shopping malls: {{density_shoppingmall.cluster}} (avg. {{density_shoppingmall.val}})</li>
+				<!--<li>Cafés: {{density_cafe.cluster}} (avg. {{density_cafe.val}})</li>-->
+				<li>$ Cafés: {{density_cafe_1.cluster}} (avg. {{density_cafe_1.val}})</li>
+				<li>$$ Cafés: {{density_cafe_2.cluster}} (avg. {{density_cafe_2.val}})</li>
+				<li>$$$ Cafés: {{density_cafe_3.cluster}} (avg. {{density_cafe_3.val}})</li>
+				<li>Grocery stores: {{density_grocerystores.cluster}} (avg. {{density_grocerystores.val}})</li>
+				<li>Convenience stores: {{density_conveniencestores.cluster}} (avg. {{density_conveniencestores.val}})</li>
+				<li>Hawker stands: {{density_hawkerstands.cluster}} (avg. {{density_hawkerstands.val}})</li>
+				<!--<li>Restaurants: {{density_restaurant.cluster}} (avg. {{density_restaurant.val}})</li>-->
+				<li>$ Restaurants: {{density_restaurant_1.cluster}} (avg. {{density_restaurant_1.val}})</li>
+				<li>$$ Restaurants: {{density_restaurant_2.cluster}} (avg. {{density_restaurant_2.val}})</li>
+				<li>$$$ Restaurants: {{density_restaurant_3.cluster}} (avg. {{density_restaurant_3.val}})</li>
+				<li>Offices: {{density_offices.cluster}} (avg. {{density_offices.val}})</li>
+				<li>Piano Schools: {{density_pianoschools.cluster}} (avg. {{density_pianoschools.val}})</li>
+				<li>Gyms: {{density_gyms.cluster}} (avg. {{density_gyms.val}})</li>
+				<li>Yoga studios: {{density_yoga.cluster}} (avg. {{density_yoga.val}})</li>
+				<li>Spas: {{density_spa.cluster}} (avg. {{density_spa.val}})</li>
+				<li>Golf Courses: {{density_golfcourse.cluster}} (avg. {{density_golfcourse.val}})</li>
+				<li>Bus stops: {{density_bus_stops.cluster}} (avg. {{density_bus_stops.val}})</li>
+				<li>MRT stops: {{density_mrt.cluster}} (avg. {{density_mrt.val}})</li>
+			</ul>
+	</script>		
+	<!-- END Templates -->
+
+	<!-- Page Layout -->
+	<input type="text" id="address-input-field" />
 	<div id="map"></div>
-	<div id="mySidepanel" class="sidepanel" data-simplebar>
+	<div id="mySidepanel" class="sidepanel">
+	  <span class="title">Facts</span>
 	  <a href="javascript:void(0)" class="closebtn open" onclick="closeNav()">&times;</a>
 	  <a href="javascript:void(0)" class="openbtn closed" onclick="openNav()">&raquo;</a>
-	  <div id="sidepanel-body"></div>
+	  <div id="sidepanel-body" data-simplebar></div>
 	</div>
+
+	<!-- END Page Layout -->
+
+	<!-- Scripts -->
 	<script type="text/javascript" src="mustache.min.js"></script>	
 	<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB4WrhAEW7_DcVB95VYA4EhE-V4tBoAEfE"></script>
 	<script src="https://libs.cartocdn.com/carto.js/v4.1.11/carto.min.js"></script>
 	<script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
 	<script type="text/javascript" src="app.js"></script>
-	<script type="text/javascript">
-		/* Set the width of the sidebar to 0 (hide it) */
-		function closeNav() {
-		  document.getElementById("mySidepanel").classList.add('shrinked');
-		  document.getElementsByClassName("closebtn")[0].classList.remove('open');
-		  document.getElementsByClassName("closebtn")[0].classList.add('closed');
-		  document.getElementsByClassName("openbtn")[0].classList.remove('closed');
-		  document.getElementsByClassName("openbtn")[0].classList.add('open');
-		  document.getElementById("address-input-field").style.left = "75px";
-		}
-		function openNav(){
-			document.getElementById("mySidepanel").classList.remove('shrinked');
-		  	document.getElementsByClassName("closebtn")[0].classList.remove('closed');
-		  	document.getElementsByClassName("closebtn")[0].classList.add('open');
-		  	document.getElementsByClassName("openbtn")[0].classList.remove('open');
-		  	document.getElementsByClassName("openbtn")[0].classList.add('closed');
-		  	document.getElementById("address-input-field").style.left = "400px";			
-		} 		
-	</script>
+	<!-- END Scripts -->
+	
 </body>
 
 </html> 

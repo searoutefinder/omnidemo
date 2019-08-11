@@ -16,13 +16,14 @@ let omniDemo = (function(){
     		username: details.apiUser
 		})
 	};
+
 	let templates = {
 		'sidePanelBody': document.getElementById('tpl-sidepanelbody').innerHTML,
 		'densitySection': document.getElementById('tpl_poidensity').innerHTML
 	};
 	let vars = {
 		'map': null,
-		'marker': new google.maps.Marker(),
+		'marker': new google.maps.Marker({'draggable': true}),
 		'buildingmarker': new google.maps.Marker({
 			'icon': {                             
   				'url': "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
@@ -36,7 +37,7 @@ let omniDemo = (function(){
 		vars.map = new google.maps.Map(document.getElementById('map'), {
 			'center': new google.maps.LatLng(1.356553, 103.829862),
 			'zoom': 12,
-			'mapTypeId': google.maps.MapTypeId.ROADMAP,
+			'mapTypeId': google.maps.MapTypeId.HYBRID,
     		'mapTypeControlOptions': {
         		'style': google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
         		'position': google.maps.ControlPosition.TOP_RIGHT
@@ -44,7 +45,10 @@ let omniDemo = (function(){
     		'fullscreenControl': false
 		});
 		vars.autocomplete = new google.maps.places.Autocomplete(document.getElementById('address-input-field'), {
-			'types': ['geocode']
+			'types': ['geocode'],
+          	'ComponentRestrictions': {
+            	'country': ['sg']
+          	}			
 		});
 		
 		vars.autocomplete.addListener('place_changed', function() {
@@ -56,6 +60,8 @@ let omniDemo = (function(){
 			_loadBuildingData();
 		});
 
+		vars.marker.addListener('dragend', _loadBuildingData);
+
 		document.getElementById("address-input-field").addEventListener("click", function(e){
 			this.value = '';
 		});	
@@ -63,7 +69,7 @@ let omniDemo = (function(){
 		_fetchDataUrl(
 			_createDataUrl('SELECT * FROM ' + details.quartilesTable),
 			function(data){
-				console.log(data);
+				//console.log(data);
 				for(i=0;i<data.rows.length;i++){
 					details.densityClusters[data.rows[i].density_column] = {};
 					details.densityClusters[data.rows[i].density_column][details.clusterNames[0]] = [data.rows[i].first_split];
@@ -71,7 +77,7 @@ let omniDemo = (function(){
 					details.densityClusters[data.rows[i].density_column][details.clusterNames[2]] = [data.rows[i].second_split,data.rows[i].third_split];
 					details.densityClusters[data.rows[i].density_column][details.clusterNames[3]] = [data.rows[i].third_split];
 				}
-				console.log(details.densityClusters);
+				//console.log(details.densityClusters);
 			}
 		);
 
@@ -124,6 +130,8 @@ let omniDemo = (function(){
 				}
 			}
 
+			console.log(densityObj);
+
 			for(i=0;i<data.rows.length;i++){
 				let keys = Object.keys(densityObj);
 				for(j=0;j<keys.length;j++){
@@ -137,15 +145,16 @@ let omniDemo = (function(){
 				}
 				densityAvgs[i] = {'val': parseFloat((avgsum / densityObj[i].length).toFixed(2)), 'cluster': ''};
 			}
-			console.log(densityObj);
-			console.log(densityAvgs);
-			console.log(details.densityClusters);
+			// console.log(densityObj);
+			// console.log(densityAvgs);
+			// console.log(details.densityClusters);
+			// console.log(details.clusterNames);
 
 			
 			for(s=0;s<details.clusterNames.length;s++){
 				for(i in densityAvgs){
+					console.log(s);
 					if(typeof details.densityClusters[i] == "undefined"){continue;}
-					console.log(s, details.clusterNames[s], details.densityClusters[i]);
 					if( details.densityClusters[i][details.clusterNames[s]].length == 1 ){
 						if(s == 0){
 							//If the first array member's value is zero
@@ -294,6 +303,25 @@ let omniDemo = (function(){
 		init: _init
 	};
 })();
+
+function closeNav() {
+  document.getElementById("mySidepanel").classList.add('shrinked');
+  document.getElementsByClassName("closebtn")[0].classList.remove('open');
+  document.getElementsByClassName("closebtn")[0].classList.add('closed');
+  document.getElementsByClassName("openbtn")[0].classList.remove('closed');
+  document.getElementsByClassName("openbtn")[0].classList.add('open');
+  document.getElementById("address-input-field").style.left = "75px";
+}
+
+function openNav(){
+	document.getElementById("mySidepanel").classList.remove('shrinked');
+  	document.getElementsByClassName("closebtn")[0].classList.remove('closed');
+  	document.getElementsByClassName("closebtn")[0].classList.add('open');
+  	document.getElementsByClassName("openbtn")[0].classList.remove('open');
+  	document.getElementsByClassName("openbtn")[0].classList.add('closed');
+  	document.getElementById("address-input-field").style.left = "400px";			
+} 
+
 window.onload = function(){
 	console.log('Page has been loaded. Loading Google Maps now.');
 	omniDemo.init();
